@@ -1,143 +1,207 @@
-# X/Twitter 工具链 (完整工作流)
-
-## 概述
-本仓库记录 X/Twitter 读+写完整工作流的工具链配置。
+🌐 **[English](README.md)** | [中文](README_CN.md)
 
 ---
 
-## 🔧 工具清单
+# X/Twitter Toolchain - Complete Agent Workflow
 
-### 1. 读取工具：x-tweet-fetcher
-- **用途**：免登录抓取推文、时间线、评论、搜索微信文章
-- **来源**：OpenClaw Skill (GitHub: ythx-101/x-tweet-fetcher)
-- **核心依赖**：
-  - Python 3.7+
-  - Camofox 浏览器 (本地 9377 端口，用于反爬)
-  - duckduckgo-search / ddgs (用于关键词发现)
+[![GitHub](https://img.shields.io/badge/GitHub-Asura--2010-blue)](https://github.com/Asura-2010/x-twitter-toolchain)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**支持功能**：
-| 功能 | 命令示例 | 依赖 |
-|------|---------|------|
-| 单条推文 | `--url <tweet_url>` | None |
-| 用户时间线 | `--user <username> --limit 10` | Camofox |
-| 评论抓取 | `--url <url> --replies` | Camofox |
-| 微信搜索 | `sogou_wechat.py --keyword "AI"` | None |
-| 推文发现 | `x_discover.py --keywords "AI Agent"` | DDGS |
+A complete read-write workflow toolkit for X/Twitter content intelligence, designed for AI agents.
 
-**国内平台支持**：
-- 微博 (weibo.com)
-- B站 (bilibili.com)
+## 🎯 Overview
+
+This toolchain provides AI agents with powerful capabilities to fetch, analyze, and interact with X/Twitter content without API keys or complex authentication.
+
+**Key Features:**
+- ✅ Zero-auth tweet fetching (no API keys needed)
+- ✅ User timeline & reply thread scraping
+- ✅ WeChat article search via Sogou
+- ✅ Chinese platform support (Weibo, Bilibili, CSDN, Xiaohongshu)
+- ✅ Keyword-based tweet discovery
+- ✅ Anti-detection browser support (Camofox)
+- ✅ Cron-friendly automation
+
+---
+
+## 📦 Components
+
+### 1. Read Tool: x-tweet-fetcher
+**Purpose**: Fetch tweets, timelines, comments, and social media content
+
+| Feature | Command | Dependencies |
+|---------|---------|-------------|
+| Single tweet | `--url <tweet_url>` | None |
+| User timeline | `--user <username> --limit 10` | Camofox |
+| Reply threads | `--url <url> --replies` | Camofox |
+| WeChat search | `sogou_wechat.py --keyword "AI"` | None |
+| Tweet discovery | `x_discover.py --keywords "AI Agent"` | DDGS |
+
+**Supported Platforms:**
+- Twitter/X (twitter.com, x.com)
+- WeChat Articles (mp.weixin.qq.com)
+- Weibo (weibo.com)
+- Bilibili (bilibili.com)
 - CSDN (csdn.net)
-- 小红书 (xiaohongshu.com)
-- 微信公众号 (mp.weixin.qq.com)
+- Xiaohongshu (xiaohongshu.com)
+
+### 2. Write Tool: x_dragon_post.py
+**Purpose**: Post tweets, replies, and interactions
+
+**Mechanism:**
+- Reads local Firefox cookies (auth_token, ct0)
+- Launches headed Chromium browser
+- Simulates human-like interactions
+
+**Security Requirements:**
+- ❌ Never use X API directly (complex signatures)
+- ❌ Never use headless mode (easily detected)
+- ❌ Never hardcode cookie strings (expires quickly)
 
 ---
 
-### 2. 发布工具：x_dragon_post.py
-- **用途**：模拟真人发推、回复、点赞
-- **机制**：
-  - 读取本地 Firefox Cookie (auth_token, ct0)
-  - 启动 Chromium 有界面浏览器
-  - 模拟真人操作流程
+## 🚀 Quick Start
 
-**核心要求**：
-- 严禁使用 X API 直接发帖（签名复杂）
-- 严禁无头模式（易被反爬）
-- 严禁手动构造 Cookie 字符串（易过期）
-
----
-
-## 📁 目录结构建议
-
-```
-~/workspace/
-├── x-tweet-fetcher/          # 读取工具
-│   ├── scripts/
-│   │   ├── fetch_tweet.py    # 主抓取脚本
-│   │   ├── sogou_wechat.py   # 微信搜索
-│   │   ├── x_discover.py     # 关键词发现
-│   │   └── camofox_client.py # Camofox 客户端
-│   └── SKILL.md              # 完整文档
-│
-├── camofox-browser/          # 反爬浏览器
-│   ├── npm start             # 启动服务 (9377)
-│   └── README.md
-│
-└── scripts/
-    └── x_dragon_post.py      # 发帖脚本
-```
-
----
-
-## 🔐 安全说明
-
-**审计结果**：
-- ✅ 无数据外传行为
-- ✅ 无敏感信息收集
-- ✅ 代码开源可审计
-- ✅ 仅访问公开 API 和网页
-
-**网络请求目标**（全部合法）：
-- fxtwitter.com (公开 API)
-- nitter.net (Twitter 镜像)
-- weixin.sogou.com (搜狗微信)
-- localhost:9377 (本地 Camofox)
-- Google/DuckDuckGo (公开搜索)
-
----
-
-## 🚀 快速开始
-
-### 安装读取工具
+### One-Line Installation
 ```bash
+./setup.sh [workspace_directory]
+```
+Default workspace: `~/workspace`
+
+### Manual Installation
+
+```bash
+# Clone the fetcher
 git clone https://github.com/ythx-101/x-tweet-fetcher.git
 cd x-tweet-fetcher
 
-# 安装可选依赖
-pip install ddgs  # DuckDuckGo 搜索
-```
+# Install optional dependencies
+pip install ddgs  # DuckDuckGo search
 
-### 安装 Camofox (用于反爬场景)
-```bash
+# Clone Camofox (for anti-detection)
 git clone https://github.com/jo-inc/camofox-browser.git
 cd camofox-browser
 npm install
-npm start  # 端口 9377
+npm start  # Runs on port 9377
 ```
 
-### 抓取示例
+---
+
+## 📖 Usage Examples
+
+### Fetch User Timeline
 ```bash
-# 用户时间线
-python3 scripts/fetch_tweet.py --user "elonmusk" --limit 5 --json
+./examples/fetch_user.sh elonmusk 10
+# or manually:
+python3 scripts/fetch_tweet.py --user "elonmusk" --limit 10 --json
+```
 
-# 微信文章搜索
+### Search WeChat Articles
+```bash
+./examples/search_wechat.sh "AI Agent" 5
+# or manually:
 python3 scripts/sogou_wechat.py --keyword "AI Agent" --limit 5 --json
+```
 
-# 关键词发现
-python3 scripts/x_discover.py --keywords "OpenClaw" --limit 5 --json
+### Discover Tweets by Keywords
+```bash
+./examples/discover_tweets.sh "OpenClaw,AI" 5
+# or manually:
+python3 scripts/x_discover.py --keywords "OpenClaw,AI" --limit 5 --json
+```
+
+### Start Camofox (for anti-detection)
+```bash
+cd ~/workspace/camofox-browser
+npm start
+# Then use --replies or --user flags in fetch_tweet.py
 ```
 
 ---
 
-## 📜 分工原则
+## 🔐 Security Audit
 
-| 操作 | 使用工具 | 说明 |
-|------|---------|------|
-| 读推文 | x-tweet-fetcher | 抓取、监控、搜索 |
-| 发推文 | x_dragon_post.py | 发帖、回复、互动 |
-| 反爬场景 | Camofox | 绕过 Cloudflare 等 |
+**Verified Safe:**
+- ✅ No data exfiltration
+- ✅ No sensitive information collection
+- ✅ Open source and auditable
+- ✅ Only accesses public APIs and web pages
 
-**严禁混用**：读和发使用不同工具，各自维护独立的认证状态。
+**Network Targets (All Legitimate):**
+- fxtwitter.com (public API)
+- nitter.net (Twitter mirror)
+- weixin.sogou.com (Sogou WeChat)
+- localhost:9377 (local Camofox)
+- Google/DuckDuckGo (public search)
 
 ---
 
-## 📅 更新日志
+## 📁 Directory Structure
 
-- **2026-02-27**: 工具链整合，完成读+写完整工作流
-- **2026-02-27**: 通过安全审计，确认无隐私风险
+```
+~/workspace/
+├── x-tweet-fetcher/          # Read tool
+│   ├── scripts/
+│   │   ├── fetch_tweet.py    # Main fetcher
+│   │   ├── sogou_wechat.py   # WeChat search
+│   │   ├── x_discover.py     # Keyword discovery
+│   │   └── camofox_client.py # Camofox integration
+│   └── SKILL.md              # Full documentation
+│
+├── camofox-browser/          # Anti-detection browser
+│   └── npm start             # Port 9377
+│
+└── scripts/
+    └── x_dragon_post.py      # Post tool (your private script)
+```
+
+---
+
+## 🎛️ Output Formats
+
+- `--json`: Structured JSON (recommended, preserves full URLs)
+- `--text-only`: Human-readable format
+- `--pretty`: Formatted JSON with indentation
+
+---
+
+## 📜 Separation of Concerns
+
+| Operation | Tool | Description |
+|-----------|------|-------------|
+| Read tweets | x-tweet-fetcher | Fetch, monitor, search |
+| Post tweets | x_dragon_post.py | Post, reply, interact |
+| Anti-detection | Camofox | Bypass Cloudflare protection |
+
+**Important:** Never mix read and write tools. They maintain separate authentication states.
+
+---
+
+## 💡 Use Cases
+
+1. **Content Monitoring**: Track competitor tweets, industry trends
+2. **Research**: Analyze user sentiment, collect datasets
+3. **Automation**: Cron-based monitoring with structured output
+4. **Multi-language Intelligence**: English (X) + Chinese (WeChat/Weibo) in one tool
+
+---
+
+## 📅 Changelog
+
+- **2025-02-27**: Toolchain integration complete
+- **2025-02-27**: Security audit passed (no privacy risks)
+- **2025-02-27**: EvoMap capsule published
+
+---
+
+## 🤝 Credits
+
+- [x-tweet-fetcher](https://github.com/ythx-101/x-tweet-fetcher) - Core fetching engine
+- [Camofox](https://github.com/jo-inc/camofox-browser) - Anti-detection browser
+- [EvoMap](https://evomap.ai) - Agent evolution marketplace
 
 ---
 
 ## License
 
-MIT (与 x-tweet-fetcher 保持一致)
+MIT (same as x-tweet-fetcher)
