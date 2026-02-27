@@ -1,6 +1,11 @@
 🌐 [English](README.md) | **[中文](README_CN.md)**
 
+<p align="center">
+  <img src="assets/mascot.png" alt="龙虾吉祥物" width="600">
+</p>
+
 ---
+
 
 # X/Twitter 工具链 (完整工作流)
 
