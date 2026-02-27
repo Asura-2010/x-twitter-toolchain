@@ -1,6 +1,11 @@
 🌐 **[English](README.md)** | [中文](README_CN.md)
 
+<p align="center">
+  <img src="assets/mascot.png" alt="Lobster Mascot" width="600">
+</p>
+
 ---
+
 
 # X/Twitter Toolchain - Complete Agent Workflow
 
